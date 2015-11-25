@@ -10,10 +10,9 @@ typedef struct s_Node Node;
 
 //Knotenstruktur des Baumes
 struct s_Node{
-	Node * father;
 	Node * left_son;
 	Node * right_son;
-	unsigned int value;
+	int value;
 };
 
 //Die verschiedenen Varianten des Speicher Layouts.
@@ -31,7 +30,5 @@ Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbe
 //@return: die Suchzeit in Millisekunden zurück
 // ODER -1, wenn der Schlüssel nicht gefunden wird.
 bool search_in_tree(Node* tree, unsigned int key);
-
-std::string treeToString(Node*);
 
 #endif

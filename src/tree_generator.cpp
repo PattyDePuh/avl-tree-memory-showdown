@@ -9,22 +9,26 @@
 
 #include "header.hpp"
 
-void recursiveShit(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex, Node* data) {
+Node* data;
+
+void recursiveShit(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
   *actualElement = data + freeIndex.back();
   freeIndex.pop_back();
-  //(*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
-  std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
+  (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
+  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
   if (startIndex != endIndex) {
-    recursiveShit(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, data);
-    recursiveShit(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, data);
+    recursiveShit(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1);
+    recursiveShit(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex);
   }
 }
 
 Node* generate_random_tree(unsigned int size, unsigned int* numbers){
-  Node data[size];
+  data = new Node[size];
 
   for (int i = 0; i < size; i++) {
     data[i].value = -1;
+    data[i].left_son = 0;
+    data[i].right_son = 0;
   }
 
   // build list of all indices
@@ -40,16 +44,14 @@ Node* generate_random_tree(unsigned int size, unsigned int* numbers){
     indexlist.erase(indexlist.begin() + rnd);
   }
 
-  Node* root = data + freeIndex.back();
-  freeIndex.pop_back();
-  root->value = numbers[size / 2];
-  //recursiveShit(root->left_son, numbers, freeIndex, 0, size / 2 - 1, data);
-  //recursiveShit(root->right_son, numbers, freeIndex, size / 2 + 1, size - 1, data);
-  recursiveShit(&root, numbers, freeIndex, 0, size - 1, data);
+  Node* root;
+  recursiveShit(&root, numbers, freeIndex, 0, size - 1);
 
+  /*
   for (int i = 0; i < size; i++) {
-    std::cout << i << ": " << data[i].value << std::endl;
+    std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
+  */
 
   return root;
 }
@@ -99,14 +101,4 @@ bool search_in_tree(Node* tree, unsigned int key){
 	}
 
 	return true;
-}
-
-std::string treeToString(Node* root) {
-  if (!root) return "nix";
-  std::stringstream ss;
-  ss << root->value << std::endl;
-  if (root->value) ss << treeToString(root->left_son);
-  if (root->right_son) ss << ", ," << treeToString(root->right_son);
-  ss << std::endl;
-  return ss.str();
 }

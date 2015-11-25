@@ -41,14 +41,10 @@ int main(int argc, char** argv){
         unsigned int numbers[anzahl_elemente];
         for (int i = 0; i < anzahl_elemente; i++) {
           numbers[i] = i;
-          std::cout << numbers[i] << " ";
         }
-        std::cout << std::endl;
 
   	//Generiere den Baum
   	Node* my_tree = generate_tree(anzahl_elemente, m_type, numbers);
-
-        std::cout << treeToString(my_tree) << std::endl;
 
   	//Beginne Messung der Such-Laufzeit
   	//Starte Zeit
@@ -65,11 +61,12 @@ int main(int argc, char** argv){
   	clock_t end_zeit = clock();
 
   	//Zeitdifferenz
-  	long gesamtzeit = (long)(((double)(end_zeit - start_zeit) / CLOCKS_PER_SEC)*1000);
-  	long zeit_pro_such = gesamtzeit / anzahl_such_iterationen;
+  	double gesamtzeit = (double)(end_zeit - start_zeit) / CLOCKS_PER_SEC;
+  	double zeit_pro_such = gesamtzeit / anzahl_such_iterationen;
 
   	//Ausgabe
-  	std::cout << "Gesamtzeit:" << gesamtzeit << " " << "Gemittelte Zeit pro Suchvorgang:" << zeit_pro_such << std::endl;
+        std::cerr << "#numbers" << " " << "#iterations" << " " << "layout" << " " << "runtime" << std::endl;
+  	std::cout << anzahl_elemente << " " << anzahl_such_iterationen << " " << argv[2] << " " << gesamtzeit << std::endl;
 
   return 0;
 }
