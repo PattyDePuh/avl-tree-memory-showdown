@@ -48,10 +48,11 @@ int main(int argc, char** argv){
   	//Generiere den Baum
   	Node* my_tree = generate_tree(anzahl_elemente, m_type, numbers);
 
+        std::cout << treeToString(my_tree) << std::endl;
+
   	//Beginne Messung der Such-Laufzeit
   	//Starte Zeit
 	clock_t start_zeit = clock();
-        /*
   	for(int i = 0; i < anzahl_such_iterationen; i++){
   		unsigned int random = rand() % anzahl_elemente;
   		if(search_in_tree(my_tree, random)){
@@ -60,7 +61,6 @@ int main(int argc, char** argv){
   			std::cerr << "Schlüssel '" << random << "' konnte nicht gefunden werden!" << std::endl;
   		}
   	}
-        */
   	//Stoppe Zeit
   	clock_t end_zeit = clock();
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv){
   	long zeit_pro_such = gesamtzeit / anzahl_such_iterationen;
 
   	//Ausgabe
-  	//std::cout << gesamtzeit << " " << zeit_pro_such << std::endl;
+  	std::cout << "Gesamtzeit:" << gesamtzeit << " " << "Gemittelte Zeit pro Suchvorgang:" << zeit_pro_such << std::endl;
 
   return 0;
 }

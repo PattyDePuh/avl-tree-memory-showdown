@@ -3,6 +3,9 @@
 #ifndef HEADER_HPP
 #define HEADER_HPP
 
+#include <sstream>
+#include <string>
+
 typedef struct s_Node Node;
 
 //Knotenstruktur des Baumes
@@ -25,8 +28,10 @@ enum Layout {RANDOM, SORTED, LAYERS, EMDEBOAS};
 Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers);
 
 //Suche im 'tree' nach dem Schlüssel 'key'
-//@return: die Suchzeit in Millisekunden zurück 
+//@return: die Suchzeit in Millisekunden zurück
 // ODER -1, wenn der Schlüssel nicht gefunden wird.
 bool search_in_tree(Node* tree, unsigned int key);
+
+std::string treeToString(Node*);
 
 #endif

@@ -4,22 +4,28 @@
 #include <math.h>
 #include <vector>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "header.hpp"
 
-void recursiveShit(Node* actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex, Node* data) {
-  actualElement = data + freeIndex.back();
+void recursiveShit(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex, Node* data) {
+  *actualElement = data + freeIndex.back();
   freeIndex.pop_back();
-  actualElement->value = numbers[startIndex + (endIndex - startIndex) / 2];
-  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << actualElement->value << std::endl;
+  //(*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
+  std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
   if (startIndex != endIndex) {
-    recursiveShit(actualElement->left_son, numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, data);
-    recursiveShit(actualElement->right_son, numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, data);
+    recursiveShit(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, data);
+    recursiveShit(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, data);
   }
 }
 
 Node* generate_random_tree(unsigned int size, unsigned int* numbers){
   Node data[size];
+
+  for (int i = 0; i < size; i++) {
+    data[i].value = -1;
+  }
 
   // build list of all indices
   std::vector<int> indexlist;
@@ -37,8 +43,9 @@ Node* generate_random_tree(unsigned int size, unsigned int* numbers){
   Node* root = data + freeIndex.back();
   freeIndex.pop_back();
   root->value = numbers[size / 2];
-  recursiveShit(root->left_son, numbers, freeIndex, 0, size / 2 - 1, data);
-  recursiveShit(root->right_son, numbers, freeIndex, size / 2 + 1, size - 1, data);
+  //recursiveShit(root->left_son, numbers, freeIndex, 0, size / 2 - 1, data);
+  //recursiveShit(root->right_son, numbers, freeIndex, size / 2 + 1, size - 1, data);
+  recursiveShit(&root, numbers, freeIndex, 0, size - 1, data);
 
   for (int i = 0; i < size; i++) {
     std::cout << i << ": " << data[i].value << std::endl;
@@ -71,25 +78,35 @@ Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbe
 //Suche im 'tree' nach dem Schlüssel 'key'
 bool search_in_tree(Node* tree, unsigned int key){
 	//Steige in den Baum oben ein.
-	Node focus = tree[0];
+	Node* focus = tree;
 
 	//Solange der im Knoten nicht der gewünschte Wert ist. DO:
-	while (focus.value != key){
+	while (focus->value != key){
 		// Vergleiche die Schlüssel und entscheide dich 
 		// für einen Knoten-Sohn, brich ab, wenn der
 		// Verweis zum Sohn leer ist.
-		if(key < focus.value){
-			if(focus.left_son == NULL)
+		if(key < focus->value){
+			if(focus->left_son == NULL)
 				return false;
 			else
-				focus = *(focus.left_son);
+				focus = focus->left_son;
 		}else{
-			if(focus.right_son == NULL)
+			if(focus->right_son == NULL)
 				return false;
 			else
-				focus = *(focus.left_son);
+				focus = focus->right_son;
 		}
 	}
 
 	return true;
+}
+
+std::string treeToString(Node* root) {
+  if (!root) return "nix";
+  std::stringstream ss;
+  ss << root->value << std::endl;
+  if (root->value) ss << treeToString(root->left_son);
+  if (root->right_son) ss << ", ," << treeToString(root->right_son);
+  ss << std::endl;
+  return ss.str();
 }
