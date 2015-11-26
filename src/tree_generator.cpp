@@ -1,6 +1,7 @@
 /* Source-Datei tree_generator.cpp */
 
 #include <cstdlib>
+#include <cmath>
 #include <math.h>
 #include <vector>
 #include <iostream>
@@ -11,26 +12,18 @@
 
 Node* data;
 
-void recursiveShit(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
+void recursiveRandom(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
   *actualElement = data + freeIndex.back();
   freeIndex.pop_back();
   (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
   //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
   if (startIndex != endIndex) {
-    recursiveShit(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1);
-    recursiveShit(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex);
+    recursiveRandom(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1);
+    recursiveRandom(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex);
   }
 }
 
 Node* generate_random_tree(unsigned int size, unsigned int* numbers){
-  data = new Node[size];
-
-  for (int i = 0; i < size; i++) {
-    data[i].value = -1;
-    data[i].left_son = 0;
-    data[i].right_son = 0;
-  }
-
   // build list of all indices
   std::vector<int> indexlist;
   for (int i = 0; i < size; i++) {
@@ -45,7 +38,7 @@ Node* generate_random_tree(unsigned int size, unsigned int* numbers){
   }
 
   Node* root;
-  recursiveShit(&root, numbers, freeIndex, 0, size - 1);
+  recursiveRandom(&root, numbers, freeIndex, 0, size - 1);
 
   /*
   for (int i = 0; i < size; i++) {
@@ -56,22 +49,100 @@ Node* generate_random_tree(unsigned int size, unsigned int* numbers){
   return root;
 }
 
-Node* generate_sorted_tree(unsigned int size){}
-Node* generate_layers_tree(unsigned int size){}
-Node* generate_emdeboas_tree(unsigned int size){}
+void recursiveSorted(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex) {
+  *actualElement = data + startIndex + (endIndex - startIndex) / 2;
+  (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
+  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
+  if (startIndex != endIndex) {
+    recursiveSorted(&((*actualElement)->left_son), numbers, startIndex, startIndex + (endIndex - startIndex) / 2 - 1);
+    recursiveSorted(&((*actualElement)->right_son), numbers, startIndex + (endIndex - startIndex) / 2 + 1, endIndex);
+  }
+}
+
+Node* generate_sorted_tree(unsigned int size, unsigned int* numbers) {
+  Node* root;
+  recursiveSorted(&root, numbers, 0, size - 1);
+
+  /*
+  for (int i = 0; i < size; i++) {
+    std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
+  }
+  */
+
+  return root;
+}
+
+void recursiveLayers(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex, int offset) {
+  *actualElement = data + offset - 1;
+  (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
+  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
+  if (startIndex != endIndex) {
+    recursiveLayers(&((*actualElement)->left_son), numbers, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, offset * 2);
+    recursiveLayers(&((*actualElement)->right_son), numbers, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, offset * 2 + 1);
+  }
+}
+
+Node* generate_layers_tree(unsigned int size, unsigned int* numbers) {
+  Node* root;
+  recursiveLayers(&root, numbers, 0, size - 1, 1);
+
+  /*
+  for (int i = 0; i < size; i++) {
+    std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
+  }
+  */
+
+  return root;
+}
+
+Node* recursiveEmdeboas(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex, int height, int offset) {
+  if (height == 1) return actualElement;
+
+  *actualElement = data + h;
+  (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
+  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
+  if (startIndex != endIndex) {
+    recursiveRandom(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1);
+    recursiveRandom(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex);
+  }
+
+  for (int i = 0; i < pow(2, height / 2 - 1); i++) {
+    recursiveEmdeboas(, );
+  }
+}
+
+Node* generate_emdeboas_tree(unsigned int size, unsigned int* numbers) {
+  Node* root;
+  recursiveEmdeboas(&root, numbers, 0, size - 1, log(size), 0);
+
+  /*
+  for (int i = 0; i < size; i++) {
+    std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
+  }
+  */
+
+  return root;
+}
 
 //Generiert einen Baum mit 'size' Einträgen und 'mem_type' Speicherlayout.
 Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers){
+  data = new Node[size];
+  for (int i = 0; i < size; i++) {
+    data[i].value = -1;
+    data[i].left_son = 0;
+    data[i].right_son = 0;
+  }
+
 	//Zuerst im switch-case die mem_types unterscheiden und dann separat generieren
         switch (mem_type) {
           case RANDOM:
             return generate_random_tree(size, numbers);
           case SORTED:
-            return generate_sorted_tree(size);
+            return generate_sorted_tree(size, numbers);
           case LAYERS:
-            return generate_layers_tree(size);
+            return generate_layers_tree(size, numbers);
           case EMDEBOAS:
-            return generate_emdeboas_tree(size);
+            return generate_emdeboas_tree(size, numbers);
         }
 	return NULL;
 }
