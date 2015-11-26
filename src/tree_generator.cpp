@@ -11,6 +11,8 @@
 #include "header.hpp"
 
 Node* data;
+int blockheight = 2;
+int globalOffset = 0;
 
 void recursiveRandom(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
   *actualElement = data + freeIndex.back();
@@ -95,31 +97,39 @@ Node* generate_layers_tree(unsigned int size, unsigned int* numbers) {
   return root;
 }
 
-Node* recursiveEmdeboas(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex, int height, int offset) {
-  if (height == 1) return actualElement;
-
-  *actualElement = data + h;
+Node* recursiveEmdeboas(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex, int offset, int level, int* levelBreak) {
+  //std::cout << "startIndex:" << startIndex << " endIndex:" << endIndex << " offset:" << offset << " level:" << level  << " levelBreak:" << levelBreak[level - 1] << " value:" << numbers[startIndex + (endIndex - startIndex) / 2] << std::endl;
+  *actualElement = data + offset - 1 + (levelBreak[level - 1] * (int)(pow(2, blockheight) - 1));
   (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
-  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
   if (startIndex != endIndex) {
-    recursiveRandom(&((*actualElement)->left_son), numbers, freeIndex, startIndex, startIndex + (endIndex - startIndex) / 2 - 1);
-    recursiveRandom(&((*actualElement)->right_son), numbers, freeIndex, startIndex + (endIndex - startIndex) / 2 + 1, endIndex);
-  }
-
-  for (int i = 0; i < pow(2, height / 2 - 1); i++) {
-    recursiveEmdeboas(, );
+    int newLOffset;
+    int newROffset;
+    if (level % blockheight == 0) {
+      newLOffset = 1;
+      newROffset = 1;
+    }
+    else {
+      newLOffset = offset * 2;
+      newROffset = offset * 2 + 1;
+    }
+    if (level % blockheight == 0) levelBreak[level]++;
+    recursiveEmdeboas(&((*actualElement)->left_son), numbers, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, newLOffset, level + 1, levelBreak);
+    recursiveEmdeboas(&((*actualElement)->right_son), numbers, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, newROffset, level + 1, levelBreak);
   }
 }
 
 Node* generate_emdeboas_tree(unsigned int size, unsigned int* numbers) {
   Node* root;
-  recursiveEmdeboas(&root, numbers, 0, size - 1, log(size), 0);
+  int levelBreak[(int)log(size + 1)];
+  std::cout << log(size + 2) << std::endl;
+  for (int i = 0; i < size; i++) {
+    levelBreak[i] = 0;
+  }
+  recursiveEmdeboas(&root, numbers, 0, size - 1, 1, 1, levelBreak);
 
-  /*
   for (int i = 0; i < size; i++) {
     std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
-  */
 
   return root;
 }
