@@ -1,0 +1,39 @@
+main{
+
+	int size *gegeben*;
+	array[size]; // Plus ggf mal 2, wenn kein inteligenter ArrayManager. 
+
+	int x *gegeben*; // entspricht den layern pro SubTree
+
+	array[0] = recursiv(getSubTreePlace(getSubTreePlace(), 0, 1, size, 0))
+}
+
+Node recursiv(SubTreeWurzel, offset, min, max, depth){
+	//Erfasse Mittelwert 
+	n = new Node();
+	n.v = (min-max) / 2
+
+	if(depth < x){
+		//Söhne im selben SubKnoten
+		Node nl = SubTreeWurzel[offset*2] = recursiv(SubTreeWurzel, offset*2, min, n.v-1, depth+1);
+		Node nr = SubTreeWurzel[offset*2+1] = recursiv(SubTreeWurzel, offset*2+1, n.v+1, max, depth+1);
+	}else{
+		//Söhne in neuen SubKnoten
+		Pointer new_sub1 = getSubTreePlace();
+		Pointer new_sub2 = getSubTreePlace();
+		nl = new_sub1 = recursiv(new_sub1, 0, min, n.v-1, 0);
+		nr = new_sub2 = recursiv(new_sub2, 0, n.v+1, max, 0);
+	}
+	//Zuweisung der Söhne 
+	n.links = nl;
+	n.rechts = nr;
+
+	return n;
+}
+
+Pointer getSubTreePlace(){
+	static index = 0;
+	Pointer p = array[index];
+	index += (2 hoch x) - 1;
+	return p;
+}
