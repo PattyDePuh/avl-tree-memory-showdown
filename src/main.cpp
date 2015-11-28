@@ -69,8 +69,12 @@ int main(int argc, char** argv){
   	double zeit_pro_such = gesamtzeit / anzahl_such_iterationen;
 
   	//Ausgabe
-        std::cerr << "#numbers" << " " << "#iterations" << " " << "layout" << " " << "runtime" << std::endl;
-  	std::cout << anzahl_elemente << " " << anzahl_such_iterationen << " " << argv[2] << " " << gesamtzeit << std::endl;
+        std::cerr << "#numbers" << " " << "#iterations" << " " << "layout" << " " << "runtime";
+        if (m_type == EMDEBOAS) std::cerr << "blockheight";
+        std::cerr << std::endl;
+  	std::cout << anzahl_elemente << " " << anzahl_such_iterationen << " " << argv[2] << " " << gesamtzeit;
+        if (m_type == EMDEBOAS) std::cout << blockheight;
+        std::cout << std::endl;
 
   return 0;
 }
