@@ -11,6 +11,7 @@
 #include "header.hpp"
 
 Node* data;
+int index = 0;
 int blockheight = 2;
 
 void recursiveRandom(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
@@ -96,33 +97,46 @@ Node* generate_layers_tree(unsigned int size, unsigned int* numbers) {
   return root;
 }
 
-void tmprecursiveEmdeboas(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex, Node* tmpdata) {
-  *actualElement = tmpdata + startIndex + (endIndex - startIndex) / 2;
-  (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
-  //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
-  if (startIndex != endIndex) {
-    tmprecursiveEmdeboas(&((*actualElement)->left_son), numbers, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, tmpdata);
-    tmprecursiveEmdeboas(&((*actualElement)->right_son), numbers, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, tmpdata);
-  }
+Node* getSubTreePlace() {
+  Node* p = data + index;
+  index += pow(2, blockheight) - 1;
+  return p;
 }
-void recursiveEmdeboas(Node** actualElement, Node* tmpdata, int index) {
-*actualElement = data + index;
-  (*actualElement)->value = tmpdata->value;
-  (*actualElement)->left_son = ;
 
+Node* recursiveEmdeboas(Node* actualElement, unsigned int* numbers, int startIndex, int endIndex, int offset, int depth) {
+  actualElement->value = numbers[startIndex + (endIndex - startIndex) / 2];
+  std::cout << actualElement << " " << actualElement->value << std::endl;
+
+  if (startIndex != endIndex) {
+    Node* nl;
+    Node* nr;
+
+    if (depth < blockheight) {
+      nl = actualElement + (offset * 2);
+      nl = recursiveEmdeboas(actualElement, numbers, startIndex, (startIndex + (endIndex - startIndex) / 2) - 1, offset * 2, depth + 1);
+      nr = actualElement + (offset * 2) + 1;
+      nr = recursiveEmdeboas(actualElement, numbers, (startIndex + (endIndex - startIndex) / 2) + 1, endIndex, (offset * 2) + 1, depth + 1);
+    }
+    else {
+      Node* newsub1 = getSubTreePlace();
+      nl = newsub1;
+      newsub1 = recursiveEmdeboas(newsub1, numbers, startIndex, (startIndex + (endIndex - startIndex) / 2) - 1, 0, 0);
+      Node* newsub2 = getSubTreePlace();
+      nl = newsub2;
+      newsub2 = recursiveEmdeboas(newsub2, numbers, (startIndex + (endIndex - startIndex) / 2) + 1, endIndex, 0, 0);
+    }
+
+    actualElement->left_son = nl;
+    actualElement->right_son = nr;
+  }
+
+  return actualElement;
 }
 
 Node* generate_emdeboas_tree(unsigned int size, unsigned int* numbers) {
   Node* root;
-  Node* root1;
-  Node* tmpdata = new Node[size];
-  for (int i = 0; i < size; i++) {
-    tmpdata[i].value = -1;
-    tmpdata[i].left_son = 0;
-    tmpdata[i].right_son = 0;
-  }
-  tmprecursiveEmdeboas(&root1, numbers, 0, size - 1, tmpdata);
-  recursiveEmdeboas(&root, root1, 0) {
+
+  root = recursiveEmdeboas(getSubTreePlace(), numbers, 1, size - 1, 0, 0);
 
   for (int i = 0; i < size; i++) {
     std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
