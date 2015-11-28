@@ -2,11 +2,12 @@
 
 #include "header.hpp"
 #include <cstdlib>
+#include <cmath>
 #include <iostream>
 #include <cstring>
 #include <time.h>
 //Folgende Argumente werden erwartet:
-// - die Anzahl Elemente, die in den Baum rein sollen.
+// - l in 2^l - 1
 // - der Typus des Speicher-Layouts
 // - die Anzahl Such-Iterationen für die Zeiterfassung
 // - Seed
@@ -17,9 +18,10 @@ int main(int argc, char** argv){
     unsigned int anzahl_elemente;
     unsigned int anzahl_such_iterationen;
     unsigned int seed;
+    int blockheight;
 
 
-  	anzahl_elemente = atoi(argv[1]);
+  	anzahl_elemente = pow(2, atoi(argv[1])) - 1;
   	anzahl_such_iterationen = atoi(argv[3]);
   	seed = atoi(argv[4]);
         if (!strcmp(argv[2], "RANDOM"))
@@ -28,8 +30,10 @@ int main(int argc, char** argv){
           m_type = SORTED;
         else if (!strcmp(argv[2], "LAYERS"))
           m_type = LAYERS;
-        else if (!strcmp(argv[2], "EMDEBOAS"))
+        else if (!strcmp(argv[2], "EMDEBOAS")) {
           m_type = EMDEBOAS;
+          blockheight = atoi(argv[5]);
+        }
         else{
           std::cerr << "Fehler: '" << argv[2] << "' ist kein gültiger Typ" << std::endl;
           return 2;
@@ -44,7 +48,7 @@ int main(int argc, char** argv){
         }
 
   	//Generiere den Baum
-  	Node* my_tree = generate_tree(anzahl_elemente, m_type, numbers);
+  	Node* my_tree = generate_tree(anzahl_elemente, m_type, numbers, blockheight);
 
   	//Beginne Messung der Such-Laufzeit
   	//Starte Zeit

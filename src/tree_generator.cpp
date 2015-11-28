@@ -12,7 +12,7 @@
 
 Node* data;
 int index = 0;
-int blockheight = 2;
+int myblockheight;
 
 void recursiveRandom(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
   *actualElement = data + freeIndex.back();
@@ -99,27 +99,27 @@ Node* generate_layers_tree(unsigned int size, unsigned int* numbers) {
 
 Node* getSubTreePlace() {
   Node* p = data + index;
-  index += pow(2, blockheight) - 1;
+  index += pow(2, myblockheight) - 1;
   return p;
 }
 
 Node* recursiveEmdeboas(Node* actualElement, unsigned int* numbers, int startIndex, int endIndex, int offset, int subdepth, int size, int depth) {
   actualElement += offset - 1;
   actualElement->value = numbers[startIndex + (endIndex - startIndex) / 2];
-  std::cout << actualElement << " " << actualElement->value << " depth:" << depth << " subdepth:" << subdepth <<std::endl;
+  //std::cout << actualElement << " " << actualElement->value << " depth:" << depth << " subdepth:" << subdepth <<std::endl;
 
   if (startIndex != endIndex) {
     Node* nl;
     Node* nr;
 
-    if (subdepth + 1 < blockheight) {
+    if (subdepth + 1 < myblockheight) {
       int newloffset = offset * 2;
       int newroffset = offset * 2 + 1;
       nl = recursiveEmdeboas(actualElement, numbers, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, newloffset, subdepth + 1, size, depth + 1);
       nr = recursiveEmdeboas(actualElement, numbers, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, newroffset, subdepth + 1, size, depth + 1);
     }
     else {
-      std::cout << "new subtree" << std::endl;
+      //std::cout << "new subtree" << std::endl;
       nl = recursiveEmdeboas(getSubTreePlace(), numbers, startIndex, (startIndex + (endIndex - startIndex) / 2) - 1, 1, 0, size, depth + 1);
       nr = recursiveEmdeboas(getSubTreePlace(), numbers, (startIndex + (endIndex - startIndex) / 2) + 1, endIndex, 1, 0, size, depth + 1);
     }
@@ -134,20 +134,21 @@ Node* recursiveEmdeboas(Node* actualElement, unsigned int* numbers, int startInd
 Node* generate_emdeboas_tree(unsigned int size, unsigned int* numbers) {
   Node* root;
 
-  std::cout << "size:" << sizeof(Node*) << std::endl;
-  std::cout << "#level:" << log2(size + 1) << std::endl;
+  //std::cout << "size:" << sizeof(Node*) << std::endl;
+  //std::cout << "#level:" << log2(size + 1) << std::endl;
 
   root = recursiveEmdeboas(getSubTreePlace(), numbers, 0, size - 1, 1, 0, size, 0);
 
   for (int i = 0; i < size; i++) {
-    std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
+    //std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
 
   return root;
 }
 
 //Generiert einen Baum mit 'size' Einträgen und 'mem_type' Speicherlayout.
-Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers){
+Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers, int blockheight){
+  myblockheight = blockheight;
   data = new Node[size];
   for (int i = 0; i < size; i++) {
     data[i].value = -1;

@@ -24,7 +24,7 @@ enum Layout {RANDOM, SORTED, LAYERS, EMDEBOAS};
 
 //Generiert einen Baum mit 'size' Einträgen und 'mem_type' Speicherlayout.
 //
-Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers);
+Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers, int blockheight);
 
 //Suche im 'tree' nach dem Schlüssel 'key'
 //@return: die Suchzeit in Millisekunden zurück
