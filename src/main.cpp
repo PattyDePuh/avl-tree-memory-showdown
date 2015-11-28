@@ -70,10 +70,10 @@ int main(int argc, char** argv){
 
   	//Ausgabe
         std::cerr << "#numbers" << " " << "#iterations" << " " << "layout" << " " << "runtime";
-        if (m_type == EMDEBOAS) std::cerr << "blockheight";
+        if (m_type == EMDEBOAS) std::cerr << " " << "blockheight";
         std::cerr << std::endl;
   	std::cout << anzahl_elemente << " " << anzahl_such_iterationen << " " << argv[2] << " " << gesamtzeit;
-        if (m_type == EMDEBOAS) std::cout << blockheight;
+        if (m_type == EMDEBOAS) std::cout << " " << blockheight;
         std::cout << std::endl;
 
   return 0;
