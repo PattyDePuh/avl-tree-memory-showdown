@@ -15,10 +15,10 @@ int main(int argc, char** argv){
 
     //Variablen aus Parameter
     Layout m_type;
-    unsigned int anzahl_elemente;
-    unsigned int anzahl_such_iterationen;
-    unsigned int seed;
-    int blockheight;
+    unsigned long anzahl_elemente;
+    unsigned long anzahl_such_iterationen;
+    unsigned long seed;
+    unsigned long blockheight;
 
 
   	anzahl_elemente = pow(2, atoi(argv[1])) - 1;
@@ -42,7 +42,7 @@ int main(int argc, char** argv){
         srand(seed);
 
         // input numbers (sorted)
-        unsigned int numbers[anzahl_elemente];
+        unsigned long numbers[anzahl_elemente];
         for (int i = 0; i < anzahl_elemente; i++) {
           numbers[i] = i;
         }
@@ -54,7 +54,7 @@ int main(int argc, char** argv){
   	//Starte Zeit
 	clock_t start_zeit = clock();
   	for(int i = 0; i < anzahl_such_iterationen; i++){
-  		unsigned int random = rand() % anzahl_elemente;
+  		unsigned long long random = rand() % anzahl_elemente;
   		if(search_in_tree(my_tree, random)){
   			continue;
   		}else{

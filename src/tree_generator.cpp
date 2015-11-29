@@ -11,10 +11,10 @@
 #include "header.hpp"
 
 Node* data;
-int index = 0;
-int myblockheight;
+long index = 0;
+long myblockheight;
 
-void recursiveRandom(Node** actualElement, unsigned int* numbers, std::vector<int>& freeIndex, int startIndex, int endIndex) {
+void recursiveRandom(Node** actualElement, unsigned long* numbers, std::vector<long>& freeIndex, long startIndex, long endIndex) {
   *actualElement = data + freeIndex.back();
   freeIndex.pop_back();
   (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
@@ -25,16 +25,16 @@ void recursiveRandom(Node** actualElement, unsigned int* numbers, std::vector<in
   }
 }
 
-Node* generate_random_tree(unsigned int size, unsigned int* numbers){
+Node* generate_random_tree(unsigned long size, unsigned long* numbers){
   // build list of all indices
-  std::vector<int> indexlist;
-  for (int i = 0; i < size; i++) {
+  std::vector<long> indexlist;
+  for (long i = 0; i < size; i++) {
     indexlist.push_back(i);
   }
   // build random list from all indices
-  std::vector<int> freeIndex;
-  for (int i = 0; i < size; i++) {
-    int rnd = rand() % indexlist.size();
+  std::vector<long> freeIndex;
+  for (long i = 0; i < size; i++) {
+    long rnd = rand() % indexlist.size();
     freeIndex.push_back(indexlist.at(rnd));
     indexlist.erase(indexlist.begin() + rnd);
   }
@@ -43,7 +43,7 @@ Node* generate_random_tree(unsigned int size, unsigned int* numbers){
   recursiveRandom(&root, numbers, freeIndex, 0, size - 1);
 
   /*
-  for (int i = 0; i < size; i++) {
+  for (long i = 0; i < size; i++) {
     std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
   */
@@ -51,7 +51,7 @@ Node* generate_random_tree(unsigned int size, unsigned int* numbers){
   return root;
 }
 
-void recursiveSorted(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex) {
+void recursiveSorted(Node** actualElement, unsigned long* numbers, long startIndex, long endIndex) {
   *actualElement = data + startIndex + (endIndex - startIndex) / 2;
   (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
   //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
@@ -61,12 +61,12 @@ void recursiveSorted(Node** actualElement, unsigned int* numbers, int startIndex
   }
 }
 
-Node* generate_sorted_tree(unsigned int size, unsigned int* numbers) {
+Node* generate_sorted_tree(unsigned long size, unsigned long* numbers) {
   Node* root;
   recursiveSorted(&root, numbers, 0, size - 1);
 
   /*
-  for (int i = 0; i < size; i++) {
+  for (long i = 0; i < size; i++) {
     std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
   */
@@ -74,7 +74,7 @@ Node* generate_sorted_tree(unsigned int size, unsigned int* numbers) {
   return root;
 }
 
-void recursiveLayers(Node** actualElement, unsigned int* numbers, int startIndex, int endIndex, int offset) {
+void recursiveLayers(Node** actualElement, unsigned long* numbers, long startIndex, long endIndex, long offset) {
   *actualElement = data + offset - 1;
   (*actualElement)->value = numbers[startIndex + (endIndex - startIndex) / 2];
   //std::cout << "von " << startIndex << " bis " << endIndex << " Zahl " << (*actualElement)->value << std::endl;
@@ -84,12 +84,12 @@ void recursiveLayers(Node** actualElement, unsigned int* numbers, int startIndex
   }
 }
 
-Node* generate_layers_tree(unsigned int size, unsigned int* numbers) {
+Node* generate_layers_tree(unsigned long size, unsigned long* numbers) {
   Node* root;
   recursiveLayers(&root, numbers, 0, size - 1, 1);
 
   /*
-  for (int i = 0; i < size; i++) {
+  for (long i = 0; i < size; i++) {
     std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
   */
@@ -103,7 +103,7 @@ Node* getSubTreePlace() {
   return p;
 }
 
-Node* recursiveEmdeboas(Node* actualElement, unsigned int* numbers, int startIndex, int endIndex, int offset, int subdepth, int size, int depth) {
+Node* recursiveEmdeboas(Node* actualElement, unsigned long* numbers, long startIndex, long endIndex, long offset, long subdepth, long size, long depth) {
   actualElement += offset - 1;
   actualElement->value = numbers[startIndex + (endIndex - startIndex) / 2];
   //std::cout << actualElement << " " << actualElement->value << " depth:" << depth << " subdepth:" << subdepth <<std::endl;
@@ -113,8 +113,8 @@ Node* recursiveEmdeboas(Node* actualElement, unsigned int* numbers, int startInd
     Node* nr;
 
     if (subdepth + 1 < myblockheight) {
-      int newloffset = offset * 2;
-      int newroffset = offset * 2 + 1;
+      long newloffset = offset * 2;
+      long newroffset = offset * 2 + 1;
       nl = recursiveEmdeboas(actualElement, numbers, startIndex, startIndex + (endIndex - startIndex) / 2 - 1, newloffset, subdepth + 1, size, depth + 1);
       nr = recursiveEmdeboas(actualElement, numbers, startIndex + (endIndex - startIndex) / 2 + 1, endIndex, newroffset, subdepth + 1, size, depth + 1);
     }
@@ -131,7 +131,7 @@ Node* recursiveEmdeboas(Node* actualElement, unsigned int* numbers, int startInd
   return actualElement;
 }
 
-Node* generate_emdeboas_tree(unsigned int size, unsigned int* numbers) {
+Node* generate_emdeboas_tree(unsigned long size, unsigned long* numbers) {
   Node* root;
 
   //std::cout << "size:" << sizeof(Node*) << std::endl;
@@ -139,18 +139,18 @@ Node* generate_emdeboas_tree(unsigned int size, unsigned int* numbers) {
 
   root = recursiveEmdeboas(getSubTreePlace(), numbers, 0, size - 1, 1, 0, size, 0);
 
-  for (int i = 0; i < size; i++) {
+  for (long i = 0; i < size; i++) {
     //std::cout << i << ": " << data + i << " " << data[i].value << " left:" << data[i].left_son << " right:" << data[i].right_son << std::endl;
   }
 
   return root;
 }
 
-//Generiert einen Baum mit 'size' Einträgen und 'mem_type' Speicherlayout.
-Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbers, int blockheight){
+//Generiert einen Baum mit 'size' Elongrägen und 'mem_type' Speicherlayout.
+Node* generate_tree(unsigned long size, enum Layout mem_type, unsigned long* numbers, long blockheight){
   myblockheight = blockheight;
   data = new Node[size];
-  for (int i = 0; i < size; i++) {
+  for (long i = 0; i < size; i++) {
     data[i].value = -1;
     data[i].left_son = 0;
     data[i].right_son = 0;
@@ -172,7 +172,7 @@ Node* generate_tree(unsigned int size, enum Layout mem_type, unsigned int* numbe
 
 
 //Suche im 'tree' nach dem Schlüssel 'key'
-bool search_in_tree(Node* tree, unsigned int key){
+bool search_in_tree(Node* tree, unsigned long key){
 	//Steige in den Baum oben ein.
 	Node* focus = tree;
 
